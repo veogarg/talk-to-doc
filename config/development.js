@@ -7,7 +7,7 @@ module.exports = {
 		maxSize: 512000,
 		maxFiles: 100
 	},
-	secretKey: 'hkstp2k2o',
+	secretKey: 'talktodoc2k2o',
 	saltKey: 'V3O1NF1',
 	saltRounds: 2
 };

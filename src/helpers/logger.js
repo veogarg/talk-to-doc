@@ -3,8 +3,8 @@ import path from 'path';
 import winston from 'winston';
 
 export default class Logger {
-	logFileName = path.join(__dirname, '../../', 'logs/hkstp_backend.app.log');
-	errorLogFileName = path.join(__dirname, '../../', 'logs/hkstp_backend.error.log');
+	logFileName = path.join(__dirname, '../../', 'logs/talktodoc_backend.app.log');
+	errorLogFileName = path.join(__dirname, '../../', 'logs/talktodoc_backend.error.log');
 	logger = null;
 
 	async init() {

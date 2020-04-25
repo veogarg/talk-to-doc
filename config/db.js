@@ -3,7 +3,7 @@ const db = {
 		mongo: {
 			host: 'localhost',
 			port: 27017,
-			database: 'hkstp_dev'
+			database: 'talktodoc_dev'
 		},
 		redis: {
 			host: 'localhost',
@@ -14,7 +14,7 @@ const db = {
 		mongo: {
 			host: 'localhost',
 			port: 27017,
-			database: 'hkstp_staging'
+			database: 'talktodoc_staging'
 		},
 		redis: {
 			host: 'localhost',
@@ -25,7 +25,7 @@ const db = {
 		mongo: {
 			host: 'localhost',
 			port: 27017,
-			database: 'hkstp_live'
+			database: 'talktodoc_live'
 		},
 		redis: {
 			host: 'localhost',
