@@ -3,7 +3,7 @@ import { refreshToken, setResponseToken } from '../helpers/jwt';
 import Logger from '../helpers/logger';
 import Services from '../services/Auth';
 import { validator } from '../helpers/schemaValidator';
-import { loginSchema } from '../validators/Auth';
+import { loginSchema, userRegistration } from '../validators/Auth';
 
 
 export default class Auth {
@@ -62,4 +62,41 @@ export default class Auth {
 		}
 	}
 
+	async register(req, res) {
+		try {
+			const {body} = req;
+			const {isError, errors} = validator(body, userRegistration);
+			if (isError) {
+				return res.status(RESPONSE_CODES.BAD_REQUEST).json({error: errors});
+			}
+
+			const exists = await this.services.checkEmailExists(body.email);
+
+			if (exists) {
+				this.logger.logInfo('Same username Registration tried: ', body);
+				return res.status(RESPONSE_CODES.UNAUTHORIZED).json({
+					error: 'Email already registered. Please Login to use your account'
+				});
+			}
+
+			const id = await this.services.insert(body);
+
+			let token;
+
+			if (id) {
+				token = refreshToken({
+					email: body.email,
+					id
+				});
+				setResponseToken(res, token);
+			}
+			return res.status(RESPONSE_CODES.POST).json({ id });      
+		}
+		catch(error) {
+			this.logger.logError('Super Admin Registration Error', error);
+			return res.status(RESPONSE_CODES.ERROR).json({
+				error
+			});
+		}
+	}
 }

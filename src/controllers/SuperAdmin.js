@@ -3,7 +3,7 @@ import { refreshToken, setResponseToken, verifyToken } from '../helpers/jwt';
 import Logger from '../helpers/logger';
 import Services from '../services/SuperAdmin';
 import { validator } from '../helpers/schemaValidator';
-import { superAdminRegistration } from '../validators/SuperAdmin';
+import { userRegistration } from '../validators/superAdmin';
 
 
 export default class SuperAdmin {
@@ -19,7 +19,7 @@ export default class SuperAdmin {
 	async save(req, res) {
 		try {
 			const {body} = req;
-			const {isError, errors} = validator(body, superAdminRegistration);
+			const {isError, errors} = validator(body, userRegistration);
 			if (isError) {
 				return res.status(RESPONSE_CODES.BAD_REQUEST).json({error: errors});
 			}

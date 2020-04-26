@@ -5,6 +5,18 @@ export const accessRoles = [
 	'admin',
 ];
 
+export const userRole = {
+	Admin : '1',
+	Doctor : '2',
+	Patient : '3'
+};
+
+export const gender = {
+	Male: 'm',
+	Female: 'f',
+	Other: 'other'
+};
+
 export const RESPONSE_CODES = {
 	GET: 200,
 	PUT: 204,
