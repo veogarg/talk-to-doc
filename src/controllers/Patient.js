@@ -1,12 +1,12 @@
 import { RESPONSE_CODES } from '../../config/constants';
 import { refreshToken, setResponseToken, verifyToken } from '../helpers/jwt';
 import Logger from '../helpers/logger';
-import Services from '../services/SuperAdmin';
+import Services from '../services/Patient';
 import { validator } from '../helpers/schemaValidator';
-import { userRegistration } from '../validators/superAdmin';
+import { userRegistration } from '../validators/patient';
 
 
-export default class SuperAdmin {
+export default class PatientController {
 
 	async init() {
 		this.services = new Services();
@@ -16,7 +16,7 @@ export default class SuperAdmin {
 		await this.logger.init();
 	}
 
-	async save(req, res) {
+	async saveQuery(req, res) {
 		try {
 			const {body} = req;
 			const {isError, errors} = validator(body, userRegistration);
@@ -54,7 +54,7 @@ export default class SuperAdmin {
 		}
 	}
 
-	async getUser(req, res) {
+	async getQueries(req, res) {
 		try {
 			const { headers: { authorization } } = req;
 			let token = authorization;

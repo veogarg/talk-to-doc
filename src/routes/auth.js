@@ -15,5 +15,8 @@ export default class Auth {
 		this.router
 			.route('/register')
 			.post((req, res) => this.authInstance.register(req, res));
+		this.router
+			.route('/getUser')
+			.post((req, res) => this.authInstance.getUser(req, res));
 	}
 }

@@ -1,5 +1,5 @@
 import Auth from './auth';
-// import SuperAdmin from './superadmin';
+import Patient from './patient';
 
 export default class Routes {
 	constructor(router) {
@@ -9,9 +9,9 @@ export default class Routes {
 	async register() {
 		/*Admin Routes*/
 		this.auth = new Auth(this.router);
-		// this.superAdmin = new SuperAdmin(this.router);
+		this.patient = new Patient(this.router);
 
 		await this.auth.routes();
-		// await this.superAdmin.routes();
+		await this.patient.routes();
 	}
 }

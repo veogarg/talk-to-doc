@@ -1,10 +1,9 @@
 import { RESPONSE_CODES } from '../../config/constants';
-import { refreshToken, setResponseToken } from '../helpers/jwt';
 import Logger from '../helpers/logger';
 import Services from '../services/Auth';
 import { validator } from '../helpers/schemaValidator';
 import { loginSchema, userRegistration } from '../validators/Auth';
-
+import { refreshToken, setResponseToken, verifyToken } from '../helpers/jwt';
 
 export default class Auth {
 
@@ -99,4 +98,33 @@ export default class Auth {
 			});
 		}
 	}
+
+	async getUser(req, res) {
+		try {
+			const { headers: { authorization } } = req;
+			let token = authorization;
+			const userToken = verifyToken(token);
+			// return res.status(RESPONSE_CODES.GET).json({ userToken });
+			const user = await this.services.getById(userToken.id);
+
+			//const user = await this.services.getAllAdmin(userToken.id);
+
+			if (user) {
+				delete user.authPassword;
+				delete user._id;
+				delete user.authToken;
+				delete user.secretKey;
+			}
+
+			token = refreshToken(userToken);
+			setResponseToken(res, token);
+
+			return res.status(RESPONSE_CODES.GET).json({ user });
+		}
+		catch(error) {
+			this.logger.logError('Error fetching User Details', error);
+			return res.status(RESPONSE_CODES.ERROR).json({ error });
+		}
+	}
+
 }
