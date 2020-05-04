@@ -1,5 +1,5 @@
 import Auth from './auth';
-import Patient from './patient';
+import Query from './query';
 
 export default class Routes {
 	constructor(router) {
@@ -9,9 +9,9 @@ export default class Routes {
 	async register() {
 		/*Admin Routes*/
 		this.auth = new Auth(this.router);
-		this.patient = new Patient(this.router);
+		this.query = new Query(this.router);
 
 		await this.auth.routes();
-		await this.patient.routes();
+		await this.query.routes();
 	}
 }

@@ -13,6 +13,7 @@ export default class DB {
 	DB_USERS = 'users';
 	DB_USER_LOGS = 'user_logs';
 	DB_PATIENT = 'patient_query';	
+	DB_DOCTOR = 'doctor_acknowledgements';	
 
 	db = {};
 	MONGO_URI = `mongodb://${this.mongoConfig.host}:${this.mongoConfig.port}/${this.mongoConfig.database}`;
@@ -41,13 +42,15 @@ export default class DB {
 		this.db.models.Users = this.mongo.collection(this.DB_USERS);
 		this.db.models.UserLogs = this.mongo.collection(this.DB_USER_LOGS);
 		this.db.models.PatientsQuery = this.mongo.collection(this.DB_PATIENT);
+		this.db.models.DoctorAcknowledgements = this.mongo.collection(this.DB_DOCTOR);
 
 		this.db.mongoSession = this.mongoSession;
 
 		this.db.modelNames = {
 			users: this.DB_USERS,
 			userLogs: this.DB_USER_LOGS,
-			patient_query: this.DB_PATIENT	
+			patient_query: this.DB_PATIENT,	
+			doctor_acknowledgements: this.DB_DOCTOR	
 		};
 	}
 

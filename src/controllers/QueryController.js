@@ -1,9 +1,9 @@
-import { RESPONSE_CODES } from '../../config/constants';
+import { RESPONSE_CODES, userRole } from '../../config/constants';
 import { verifyToken } from '../helpers/jwt';
 import Logger from '../helpers/logger';
-import Services from '../services/Patient';
+import Services from '../services/Query';
 import { validator } from '../helpers/schemaValidator';
-import { newQuery } from '../validators/patient';
+import { newQuery, docAck } from '../validators/Query';
 
 
 export default class QueryController {
@@ -75,7 +75,40 @@ export default class QueryController {
 			if(!user){
 				return res.status(RESPONSE_CODES.UNAUTHORIZED).json({error: 'Unauthorized. User Not Found'});
 			}
+
 			const queries = await this.services.getAllQueries();
+
+			return res.status(RESPONSE_CODES.GET).json({ queries });
+		}
+		catch(error) {
+			this.logger.logError('Error fetching User Details', error);
+			return res.status(RESPONSE_CODES.ERROR).json({ error });
+		}
+	}
+
+	async docAcknowledge(req, res){
+		try {
+			const { headers: { authorization }, body } = req;
+
+			let token = authorization;
+			const {isError, errors} = validator(body, docAck);
+			if (isError) {
+				return res.status(RESPONSE_CODES.BAD_REQUEST).json({error: errors});
+			}
+			const userToken = verifyToken(token);
+			const user = await this.services.getById(userToken.id);
+			if(!user || user.role != userRole.Doctor){
+				return res.status(RESPONSE_CODES.UNAUTHORIZED).json({error: 'Unauthorized Action'});
+			}
+			// const query = await this.services.getQueryDetails(body.query_id);
+
+			// if(!query.hasOwnProperty()){
+			// 	return res.status(RESPONSE_CODES.GET).json({ error: 'Oops! No associated query found with this query id' });
+			// }
+			
+			body.doctor_id = user.id;
+
+			const queries = await this.services.acknowledgement(body);
 
 			return res.status(RESPONSE_CODES.GET).json({ queries });
 		}

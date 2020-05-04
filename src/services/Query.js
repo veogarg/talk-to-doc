@@ -2,7 +2,7 @@ import Logger from '../helpers/logger';
 import DB from '../helpers/db';
 import uuid from 'uuid/v1';
 
-export default class Patient {
+export default class Query {
 	async init() {
 		this.logger = new Logger();
 		this.DB = new DB();
@@ -13,6 +13,7 @@ export default class Patient {
 		this.db = await this.DB.getDB();
 		this.model = this.db.models.PatientsQuery;
 		this.userModel = this.db.models.Users;
+		this.docModel = this.db.models.DoctorAcknowledgements;
 	}
   
 	async insert(payload) {
@@ -21,7 +22,7 @@ export default class Patient {
 			payload.createdAt = Date.now();
 			payload.updatedAt = Date.now();
 			payload.active = true;
-			payload.is_deleted = false;
+			payload.deletedAt = false;
 			await this.model.insertOne(payload);
 			return payload.id;
 		}
@@ -44,7 +45,7 @@ export default class Patient {
 
 	async getMyQueries(patient_id){
 		try {
-			const myQueries = await this.model.find({ is_deleted: false, patient_id }).sort({createdAt: -1}).toArray();
+			const myQueries = await this.model.find({ deletedAt: false, patient_id }).sort({createdAt: -1}).toArray();
 			return myQueries;
 		}
 		catch(error) {
@@ -55,11 +56,31 @@ export default class Patient {
 
 	async getAllQueries(){
 		try {
-			const myQueries = await this.model.find({ is_deleted: false }).sort({createdAt: -1}).toArray();
+			const myQueries = await this.model.find({ deletedAt: false }).sort({createdAt: -1}).toArray();
 			return myQueries;
 		}
 		catch(error) {
 			this.logger.logError('Error while fetching queries', error);
+			throw error;
+		}
+	}
+
+	async getQueryDetails(id){
+		try {
+			const myQueries = await this.model.findOne({ id });
+			return myQueries;
+		}
+		catch(error) {
+			this.logger.logError('Error while fetching query details', error);
+			throw error;
+		}
+	}
+
+	async acknowledgement(payload){
+		try {
+			return payload;
+		} catch (error) {
+			this.logger.logError('Error while acknowledging query', error);
 			throw error;
 		}
 	}
