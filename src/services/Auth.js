@@ -49,11 +49,12 @@ export default class Auth {
 			payload.id = uuid();
 			payload.createdAt = Date.now();
 			payload.updatedAt = Date.now();
-			payload.active = true;      
+			payload.active = true; 
+			payload.is_deleted = false; 
 			payload.password = await generateHash(payload.password);
 			payload.authToken = await SHA256(`${payload.email}-P@r7i@l-${payload.name}-${Date.now()}`);
 			payload.secretKey = await SHA512(`${payload.email}-P@r7i@l-${payload.name}-${Date.now()}`);
-			const newUser = await this.model.insertOne(payload);
+			await this.model.insertOne(payload);
 			return payload.id;
 		}
 		catch (error) {

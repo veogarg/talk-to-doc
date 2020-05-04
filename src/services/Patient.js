@@ -1,9 +1,6 @@
-import bcrypt from 'bcryptjs';
 import Logger from '../helpers/logger';
 import DB from '../helpers/db';
 import uuid from 'uuid/v1';
-import {generateHash} from '../helpers/jwt';
-import {SHA256, SHA512} from '../helpers/encrypt';
 
 export default class Patient {
 	async init() {
@@ -14,34 +11,8 @@ export default class Patient {
 		await this.DB.init();
 
 		this.db = await this.DB.getDB();
-		this.model = this.db.models.Users;
-	}
-
-	async login(payload) {
-		try {
-			const {
-				email,
-				password
-			} = payload;
-
-			const user = await this.model.findOne({email});
-      
-			if (!user) {
-				return null;
-			}
-
-			const passwordMatch = await bcrypt.compareSync(password, user.password);
-			if (!passwordMatch) {
-				return null;
-			}
-
-			return user;
-
-		}
-		catch(error) {
-			this.logger.logError('Error Logging in Services', error);
-			throw error;
-		}
+		this.model = this.db.models.PatientsQuery;
+		this.userModel = this.db.models.Users;
 	}
   
 	async insert(payload) {
@@ -49,40 +20,47 @@ export default class Patient {
 			payload.id = uuid();
 			payload.createdAt = Date.now();
 			payload.updatedAt = Date.now();
-			payload.active = true;      
-			payload.password = await generateHash(payload.password);
-			payload.authToken = await SHA256(`${payload.email}-P@r7i@l-${payload.name}-${Date.now()}`);
-			payload.secretKey = await SHA512(`${payload.email}-P@r7i@l-${payload.name}-${Date.now()}`);
-			const newUser = await this.model.insertOne(payload);
+			payload.active = true;
+			payload.is_deleted = false;
+			await this.model.insertOne(payload);
 			return payload.id;
 		}
 		catch (error) {
-			this.logger.logError('Insert SuperAdmin Error ', error);
+			this.logger.logError('Error While registering query ', error);
 			throw error;
 		}
 	}
 
 	async getById(id) {
 		try {
-			const user = await this.model.findOne({ id });
-
+			const user = await this.userModel.findOne({ id });
 			return user;
 		}
 		catch(error) {
 			this.logger.logError('Error fetching User by ID', error);
 			throw error;
 		}
-	}  
+	}
 
-	async checkEmailExists(email) {
+	async getMyQueries(patient_id){
 		try {
-			const superAdmin = await this.model.findOne({ email });
-			return !!superAdmin;
+			const myQueries = await this.model.find({ is_deleted: false, patient_id }).sort({createdAt: -1}).toArray();
+			return myQueries;
 		}
-		catch (error) {
-			this.logger.logError('Checking existing emailId ', error);
+		catch(error) {
+			this.logger.logError('Error while fetching queries', error);
 			throw error;
 		}
 	}
-  
+
+	async getAllQueries(){
+		try {
+			const myQueries = await this.model.find({ is_deleted: false }).sort({createdAt: -1}).toArray();
+			return myQueries;
+		}
+		catch(error) {
+			this.logger.logError('Error while fetching queries', error);
+			throw error;
+		}
+	}
 }

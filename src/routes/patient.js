@@ -1,9 +1,9 @@
-import PatientController from '../controllers/PatientController';
+import QueryController from '../controllers/QueryController';
 
 export default class Patient {
 	constructor(router) {
 		this.router = router;
-		this.patient = new PatientController();
+		this.patient = new QueryController();
 	}
 
 	async routes() {
@@ -12,6 +12,10 @@ export default class Patient {
 		this.router
 			.route('/patient/query')
 			.post((req, res) => this.patient.saveQuery(req, res))
-			.get((req, res) => this.patient.getQueries(req, res));
+			.get((req, res) => this.patient.getMyQueries(req, res));
+		
+		this.router
+			.route('/allQueries')
+			.get((req, res) => this.patient.getAllQueries(req, res));
 	}
 }
