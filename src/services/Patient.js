@@ -5,7 +5,7 @@ import uuid from 'uuid/v1';
 import {generateHash} from '../helpers/jwt';
 import {SHA256, SHA512} from '../helpers/encrypt';
 
-export default class Auth {
+export default class Patient {
 	async init() {
 		this.logger = new Logger();
 		this.DB = new DB();

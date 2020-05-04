@@ -1,4 +1,4 @@
-import PatientController from '../controllers/Patient';
+import PatientController from '../controllers/PatientController';
 
 export default class Patient {
 	constructor(router) {

@@ -12,7 +12,7 @@ export default class DB {
 
 	DB_USERS = 'users';
 	DB_USER_LOGS = 'user_logs';
-	DB_SUPER_ADMIN = 'superadmin';	
+	DB_PATIENT = 'patient';	
 
 	db = {};
 	MONGO_URI = `mongodb://${this.mongoConfig.host}:${this.mongoConfig.port}/${this.mongoConfig.database}`;
@@ -40,14 +40,14 @@ export default class DB {
 
 		this.db.models.Users = this.mongo.collection(this.DB_USERS);
 		this.db.models.UserLogs = this.mongo.collection(this.DB_USER_LOGS);
-		this.db.models.SuperAdmin = this.mongo.collection(this.DB_SUPER_ADMIN);
+		this.db.models.Patient = this.mongo.collection(this.DB_PATIENT);
 
 		this.db.mongoSession = this.mongoSession;
 
 		this.db.modelNames = {
 			users: this.DB_USERS,
 			userLogs: this.DB_USER_LOGS,
-			superAdmin: this.DB_SUPER_ADMIN	
+			Patient: this.DB_PATIENT	
 		};
 	}
 

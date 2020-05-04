@@ -1,6 +1,6 @@
 import Joi from 'joi';
-export const userRegistration = Joi.object().keys({
-	name: Joi.string().required().error(() => 'Name is required'),
+export const newQuery = Joi.object().keys({
+	query: Joi.string().required().error(() => 'Query details are required'),
 	email: Joi.string().email().required().error(() => 'Valid Email is required'),
 	authPassword: Joi.string()
 		.regex(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,25}$/)
